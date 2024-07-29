@@ -85,11 +85,17 @@ Clone this repository, navigate with your terminal into this repository and exec
 
 Basically all prerequisites are installed by executing below installation step.
 
+Alternatively when cloning the whole repository use following command to install them.
+
+```sh
+pip install -r requirements.txt
+```
+
 ### Installation
 
 Installing using pip: pip install carbontracking
 
-Alternatively clone the repository using git clone.
+Alternatively clone the repository using git clone https://git.opendfki.de/gaih/carbon_tracker.git
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
