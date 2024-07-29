@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - Brand</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/fontawesome-all.min.css') }}">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0 navbar-dark" style="color: var(--bs-form-valid-color);background: var(--bs-green);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"></div>
+                    <div class="sidebar-brand-text mx-3"><span>CarbonTracker</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..."><button class="btn btn-primary py-0" type="button" style="color: var(--bs-form-valid-color);background: var(--bs-form-valid-color);border-color: var(--bs-green);"><i class="fas fa-search" style="background: var(--bs-green);color: var(--bs-black);border-color: var(--bs-teal);"></i></button></div>
+                        </form>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-dark mb-0">Dashboard</h2>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="dropdown" id="task-dropdown">
+                                <button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">Task</button>
+                                <div class="dropdown-menu">
+                                    {% for task in data["unique_tasks"] %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="{{ task }}">
+                                        <label class="form-check-label" for="{{ task }}">{{ task }}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="col-auto">
+                            <div class="dropdown" id="host-dropdown">
+                                <button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">Host</button>
+                                <div class="dropdown-menu">
+                                    {% for host in data["unique_hosts"] %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="{{ host }}">
+                                        <label class="form-check-label" for="{{ host }}">{{ host }}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-auto">
+                            <div class="dropdown" id="gpu-dropdown">
+                                <button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">GPU</button>
+                                <div class="dropdown-menu">
+                                    {% for gpu in data["hostgpus"] %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="{{ gpu.gpu_cpu }}">
+                                        <label class="form-check-label" for="{{ gpu.gpu_cpu }}">{{ gpu.gpu_cpu }}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-auto">
+                            <div class="dropdown" id="model-dropdown">
+                                <button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">Model</button>
+                                <div class="dropdown-menu">
+                                    {% for model in data["models"] %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="{{ model.task }}_{{ model.model_name }}">
+                                        <label class="form-check-label" for="{{ model }}">{{ model.task }}_{{ model.model_name }}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-auto"><button id="submit-button" class="btn btn-primary">Update</button></div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <div class="col-md-6 col-xl-3 mb-4">
+                                <div class="card shadow border-start-primary py-2">
+                                    <div class="card-body">
+                                        <div class="row align-items-center no-gutters">
+                                            <div class="col me-2">
+                                                <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Stromverbrauch</span></div>
+                                                <div class="text-dark fw-bold h5 mb-0" id="energy"><span>0 kwh</span></div>
+                                            </div>
+                                            <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-info py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>Carbon Intensity</span></div>
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="text-dark fw-bold h5 mb-0 me-3" id="carb_int"><span>0g CO2/kwh&nbsp;</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-clipboard-list fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-start-warning py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col me-2">
+                                            <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>CO2 Verbrauch</span></div>
+                                            <div class="text-dark fw-bold h5 mb-0" id="co2"><span>0 kg</span></div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-7 col-xl-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">CO2 Emissionenvergleich (Training)</h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">
+                                            <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p>
+                                            <a class="dropdown-item" href="#">&nbsp;Action</a>
+                                            <a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="carbon_chart" data-bss-chart='{{ data["chart_data"] | tojson | safe }}'></canvas>      
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-xl-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Strommix</h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">
+                                            <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p>
+                                            <a class="dropdown-item" href="#">&nbsp;Action</a>
+                                            <a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area" style="height: 234px; width: 100%;">
+                                        <canvas id="power_chart" data-bss-chart='{{ data["chart_data_power_mix"] | tojson | safe }}'></canvas>      
+                                    </div>
+                                    <div class="text-center small mt-4">
+                                        <span class="me-2"><i class="fas fa-circle" style="color: lightblue;"></i>&nbsp;Wind</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: lightgreen;"></i>&nbsp;Biomasse</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: yellow;"></i>&nbsp;Solar</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: darkblue;"></i>&nbsp;Wasserkraft</span> <br>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: brown;"></i>&nbsp;Kohle</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: gray;"></i>&nbsp;Gas</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: Black;"></i>&nbsp;Öl</span>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: darkgreen;"></i>&nbsp;Kernenergie</span> <br>
+                                        <span class="me-2"><i class="fas fa-circle" style="color: red;"></i>&nbsp;Geothermal</span> 
+                                        <span class="me-2"><i class="fas fa-circle" style="color: White;"></i>&nbsp;Sonstiges</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7 col-xl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">CO2 Inferenz (pro Call)</h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">
+                                            <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p>
+                                            <a class="dropdown-item" href="#">&nbsp;Action</a>
+                                            <a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="inf_chart" data-bss-chart='{{ data["chart_data_inf"] | tojson | safe }}'></canvas>      
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7 col-xl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Laufzeitenvergleich (Training)</h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">
+                                            <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p>
+                                            <a class="dropdown-item" href="#">&nbsp;Action</a>
+                                            <a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="time_chart" data-bss-chart='{{ data["chart_data"] | tojson | safe }}'></canvas>      
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-7 col-xl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">GPU / CPU Emissionenvergleich</h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button">
+                                            <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                        </button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p>
+                                            <a class="dropdown-item" href="#">&nbsp;Action</a>
+                                            <a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="gpu_cpu_chart" data-bss-chart='{{ data["chart_data"] | tojson | safe }}'></canvas>      
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FILEPATH: /Users/peterrolfes/workspace/carbon_tracker/templates/index.html -->
+                    <!--
+                        This script is responsible for handling the functionality of the index.html page.
+                        It initializes various dropdown menus and charts, and handles the submit button click event.
+                        When the submit button is clicked, it retrieves the selected values from the dropdown menus,
+                        sends a POST request to the server with the selected values, and updates the charts and data on the page based on the response.
+                    -->
+                    <script>
+                        // JavaScript code here...
+                    </script>
+                    <script>
+
+                        document.addEventListener('DOMContentLoaded', function () {
+                            
+                            var taskDropdown = document.getElementById('task-dropdown');
+                            var hostDropdown = document.getElementById('host-dropdown');
+                            var gpuDropdown = document.getElementById('gpu-dropdown');
+                            var modelDropdown = document.getElementById('model-dropdown');
+                            
+                            var submitButton = document.getElementById('submit-button');
+
+                            var chartdata_carbon = JSON.parse(document.getElementById('carbon_chart').dataset.bssChart);
+                            var ctx = document.getElementById('carbon_chart').getContext('2d');
+                            var myChart_carbon = new Chart(ctx, chartdata_carbon); 
+
+                            var chartdata_time = JSON.parse(document.getElementById('time_chart').dataset.bssChart);
+                            var ctx = document.getElementById('time_chart').getContext('2d');
+                            var myChart_time = new Chart(ctx, chartdata_time); 
+
+                            var chartdata_inf = JSON.parse(document.getElementById('inf_chart').dataset.bssChart);
+                            var ctx = document.getElementById('inf_chart').getContext('2d');
+                            var myChart_inf = new Chart(ctx, chartdata_inf); 
+
+                            var chartdata_power = JSON.parse(document.getElementById('power_chart').dataset.bssChart);
+                            var ctx = document.getElementById('power_chart').getContext('2d');
+                            var myChart_power = new Chart(ctx, chartdata_power); 
+
+                            var chartdata_gpu_cpu = JSON.parse(document.getElementById('gpu_cpu_chart').dataset.bssChart);
+                            var ctx = document.getElementById('gpu_cpu_chart').getContext('2d');
+                            var myChart_gpu_cpu = new Chart(ctx, chartdata_gpu_cpu); 
+
+                            const energy = document.querySelector("#energy");
+                            const carb_int = document.querySelector("#carb_int");  
+                            const co2 = document.querySelector("#co2");
+
+                            // Function to start the real-time updates
+                            function startRealTimeUpdates() {
+                                // Store the old data
+                                oldData = {}
+
+                                // Update the data immediately
+                                updateData();
+
+                                // Set interval to update the data every 5 seconds (adjust as needed)
+                                setInterval(updateData, 100);
+
+                                // Function to check if the new data is different from the old data
+                                function isDataDifferent(newData) {
+
+                                    // Compare the new data with the old data
+                                    if (JSON.stringify(newData) !== JSON.stringify(oldData)) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                }
+
+                                // Function to update the data
+                                function updateData() {
+                                    var checkedTasks = Array.from(document.querySelectorAll('#task-dropdown input[type="checkbox"]:checked'))
+                                        .map(function (checkbox) {
+                                            return checkbox.id;
+                                        });
+
+                                    var checkedHosts = Array.from(document.querySelectorAll('#host-dropdown input[type="checkbox"]:checked'))
+                                        .map(function (checkbox) {
+                                            return checkbox.id;
+                                        });
+
+                                    var checkedGPUs = Array.from(document.querySelectorAll('#gpu-dropdown input[type="checkbox"]:checked'))
+                                        .map(function (checkbox) {
+                                            return checkbox.id;
+                                        });
+
+                                    var checkedModels = Array.from(document.querySelectorAll('#model-dropdown input[type="checkbox"]:checked'))
+                                        .map(function (checkbox) {
+                                            return checkbox.id;
+                                        });
+
+                                    var mergedArray = {
+                                        tasks: checkedTasks,
+                                        hosts: checkedHosts,
+                                        gpus: checkedGPUs,
+                                        models: checkedModels
+                                    };
+
+                                    fetch('/receive_update', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(mergedArray)
+                                    })
+                                    .then(response => response.text())
+                                    .then(data => {
+                                        data = JSON.parse(data);
+
+    
+                                        if (isDataDifferent(data)) {
+                                            // Update the old data with the new data
+                                            oldData = structuredClone(data);
+
+                                            energy.innerHTML = data.energy + " kwh";
+                                            carb_int.innerHTML = data.carb_int + " g CO2/kwh";
+                                            co2.innerHTML = data.co2 + " kg";
+
+                                            myChart_carbon.data = data.chart_data_carb.data;
+                                            myChart_time.data = data.chart_data_time.data;
+                                            myChart_inf.data = data.chart_data_inf.data;
+                                            myChart_power.data = data.chart_data_power_mix.data;
+                                            myChart_gpu_cpu.data = data.chart_data_gpu_cpu.data;
+
+                                            myChart_carbon.update();
+                                            myChart_time.update();
+                                            myChart_inf.update();
+                                            myChart_power.update();
+                                            myChart_gpu_cpu.update();
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                                }
+                            }
+
+                            // Add event listener to the submit button
+
+                            // For instant updates without clicking
+                            // startRealTimeUpdates();
+                            submitButton.addEventListener('click', startRealTimeUpdates);
+                        
+                        });    
+
+                
+
+                    </script>
+                </div>
+            </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © Brand 2024</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        
+        <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/js/chart.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/js/bs-init.js') }}"></script>
+        <script src="{{ url_for('static', filename='assets/js/theme.js') }}"></script>
+    </body>
+</html>
