@@ -93,7 +93,11 @@ pip install -r requirements.txt
 
 ### Installation
 
-Installing using pip: pip install carbontracking
+```sh
+Installing using pip:
+```
+
+pip install carbontracking
 
 Alternatively clone the repository using git clone https://git.opendfki.de/gaih/carbon_tracker.git
 
