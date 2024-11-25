@@ -105,6 +105,8 @@ Alternatively clone the repository using git clone https://git.opendfki.de/gaih/
 
 ## Usage
 
+CURRENTLY ONLY UNDER PYTHON==3.10
+
 Usage is displayed in following colab notebook:
 https://colab.research.google.com/drive/1AsMpi_7Tdr8Rmd2oFDK5qvPyLJl5XH6W?usp=sharing
 
